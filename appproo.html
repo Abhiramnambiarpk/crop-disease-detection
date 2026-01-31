@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cropbyte</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- Add this line -->
+  <!-- ===== style.css START ===== -->
+  <style>
+    :root {
+      --primary-green: #2ecc40;
+      --secondary-green: #27ae60;
+      --light-green: #eafaf1;
+      --dark-green: #145a32;
+      --white: #fff;
+      --gray: #f9f9f9;
+    }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      padding: 0;
+      margin: 0;
+      background: var(--light-green);
+      color: var(--dark-green);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    header {
+      width: 100%;
+      background: var(--primary-green);
+      color: #fff;
+      padding: 12px 0;
+      text-align: center;
+      font-size: 1.5rem;
+      letter-spacing: 1px;
+      margin-bottom: 0.5em;
+    }
+    .card {
+      background: var(--light-green);
+      border-radius: 16px;
+      box-shadow: 0 2px 16px rgba(44, 62, 80, 0.08);
+      padding: 24px 12px;
+      max-width: 350px;
+      margin: 40px auto;
+    }
+    .lang-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      align-items: stretch;
+    }
+    .lang-btn {
+      font-size: 1.1rem;
+      padding: 14px 0;
+      min-width: 0;
+      border-radius: 8px;
+      border: none;
+      background: #52c36b;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .lang-btn:hover {
+      background: #8bec53;
+    }
+    .hero {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      margin: 1em 0 2em 0;
+      gap: 2em;
+    }
+    .hero-text {
+      max-width: 350px;
+    }
+    .hero-title {
+      font-size: 1.5em;
+      font-weight: bold;
+      margin-bottom: 0.5em;
+    }
+    .hero-desc {
+      font-size: 1.1em;
+      margin-bottom: 1em;
+    }
+    .hero-img img {
+      width: 180px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
+    }
+    main {
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    label {
+      font-weight: 500;
+      margin-top: 1em;
+      display: block;
+    }
+    input[type="file"], textarea {
+      margin: 0.5em 0 1em 0;
+      width: 100%;
+      font-size: 1em;
+      border-radius: 6px;
+      border: 1px solid #b2dfdb;
+      padding: 0.7em;
+      background: #fff;
+      box-sizing: border-box;
+    }
+    #imageContainer img {
+      max-width: 100%;
+      margin: 0.5em 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
+    }
+    button {
+      transition: background 0.2s;
+    }
+    #takePhotoBtn {
+      background: #27ae60;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 0;
+      font-size: 1.1em;
+      width: 100%;
+      margin-bottom: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5em;
+    }
+    #analyzeBtn {
+      background: #2ecc40;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 0;
+      font-size: 1.1em;
+      width: 100%;
+      margin-top: 1em;
+      cursor: pointer;
+    }
+    #analyzeBtn:hover, #takePhotoBtn:hover {
+      background: #8bec53;
+      color: #145a32;
+    }
+    footer {
+      margin-top: 2em;
+      color: #888;
+      font-size: 0.95em;
+      text-align: center;
+      width: 100%;
+    }
+    @media (max-width: 500px) {
+      .card {
+        max-width: 98vw;
+        padding: 14px 4vw;
+      }
+      .lang-btn {
+        font-size: 1rem;
+        padding: 12px 0;
+      }
+      #title {
+        font-size: 1.3rem;
+      }
+      #description {
+        font-size: 1rem;
+      }
+      .hero-img img {
+        width: 120px;
+      }
+      .hero-title {
+        font-size: 1.1em;
+      }
+      main {
+        max-width: 98vw;
+      }
+    }
+  </style>
+  <!-- ===== style.css END ===== -->
+  <!-- Font Awesome CDN for camera icon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+  <!-- ===== index.html START ===== -->
+  <div id="languagePage">
+    <div class="card fade-in">
+      <h1 id="title">Choose Your Language</h1>
+      <p id="description">Select the language you are comfortable with.</p>
+      <div class="lang-buttons">
+        <button class="lang-btn" onclick="setLanguage('en')">English</button>
+        <button class="lang-btn" onclick="setLanguage('hi')">हिंदी</button>
+        <button class="lang-btn" onclick="setLanguage('mal')">മലയാളം</button>
+        <button class="lang-btn" onclick="setLanguage('tam')">தமிழ்</button>
+        <button class="lang-btn" onclick="setLanguage('tel')">తెలుగు</button>
+        <button class="lang-btn" onclick="setLanguage('kan')">ಕನ್ನಡ</button>
+        <button class="lang-btn" onclick="setLanguage('mar')">मराठी</button>
+      </div>
+    </div>
+  </div>
+  <!-- ===== index.html END ===== -->
+
+  <!-- ===== main.html START ===== -->
+  <div id="mainPage" style="display:none;">
+    <header>
+      <h1 style="margin:0;">🌱 Cropbyte</h1>
+    </header>
+    <button id="changeLangBtn" style="margin: 1em 0; background: #fff; color: #145a32; border: 1px solid #27ae60; border-radius: 8px; padding: 8px 16px; cursor: pointer;">
+      Change Language
+    </button>
+    <section class="hero">
+      <div class="hero-text">
+        <div class="hero-title" id="heroTitle"></div>
+        <div class="hero-desc" id="heroDesc">
+          Quick check for diseased plants. Take a photo, get an answer, save your crops.
+        </div>
+      </div>
+      <div class="hero-img">
+        <img src="https://images.unsplash.com/photo-1599328580087-15c9dab481f3?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8cGFkZHklMjBmaWVsZHxlbnwwfHwwfHx8MA%3D%3D" alt="Healthy crop field">
+      </div>
+    </section>
+    <main>
+      <form id="cropForm" autocomplete="off">
+        <label for="imageInput" id="uploadLabel">Upload Crop Image</label>
+        <button type="button" id="takePhotoBtn" style="margin-bottom:10px;">
+          <i class="fa-solid fa-camera"></i> <span id="takePhotoText">Take photo</span>
+        </button>
+        <input type="file" accept="image/*" capture="environment" id="imageInput">
+        <div id="imageContainer"></div>
+        <label for="notes" id="notesLabel">Additional Notes (optional)</label>
+        <textarea id="notes" rows="2" placeholder="Describe symptoms or concerns"></textarea>
+        <button type="button" id="analyzeBtn">Analyze</button>
+      </form>
+    </main>
+    <footer>
+      &copy; 2024 Cropbyte | For educational use
+    </footer>
+  </div>
+  <!-- ===== main.html END ===== -->
+
+  <!-- ===== translation.js START ===== -->
+  <script>
+    const translations = {
+      en: {
+        title: "Choose Your Language",
+        description: "Select the language you are comfortable with.",
+        heroTitle: "Your Smart Plant Health Assistant",
+        heroDesc: "Quick check for diseased plants. Take a photo, get an answer, save your crops.",
+        uploadLabel: "Upload Crop Image",
+        takePhoto: "Take photo",
+        notesLabel: "Additional Notes (optional)",
+        notesPlaceholder: "Describe symptoms or concerns",
+        analyzeBtn: "Analyze"
+      },
+      hi: {
+        title: "अपनी भाषा चुनें",
+        description: "वह भाषा चुनें जिसमें आप सहज हैं।",
+        heroTitle: "आपका स्मार्ट पौध स्वास्थ्य सहायक",
+        heroDesc: "बीमार पौधों की त्वरित जांच। एक फोटो लें, उत्तर पाएं, अपनी फसल बचाएं।",
+        uploadLabel: "फसल की छवि अपलोड करें",
+        takePhoto: "फोटो लें",
+        notesLabel: "अतिरिक्त नोट्स (वैकल्पिक)",
+        notesPlaceholder: "लक्षण या चिंताएँ वर्णित करें",
+        analyzeBtn: "विश्लेषण करें"
+      },
+      mal: {
+        title: "നിങ്ങളുടെ ഭാഷ തിരഞ്ഞെടുക്കുക",
+        description: "നിങ്ങൾക്ക് സൗകര്യപ്രദമായ ഭാഷ തിരഞ്ഞെടുക്കുക.",
+        heroTitle: "നിങ്ങളുടെ സ്മാർട്ട് പ്ലാന്റ് ഹെൽത്ത് അസിസ്റ്റന്റ്",
+        heroDesc: "രോഗബാധിതമായ ചെടികളെ പെട്ടെന്ന് പരിശോധിക്കുക. ഒരു ഫോട്ടോ എടുക്കൂ, ഉത്തരമെടുക്കൂ, നിങ്ങളുടെ വിള രക്ഷിക്കൂ.",
+        uploadLabel: "വിളയുടെ ചിത്രം അപ്‌ലോഡ് ചെയ്യുക",
+        takePhoto: "ഫോട്ടോ എടുക്കുക",
+        notesLabel: "കൂടുതൽ കുറിപ്പുകൾ (ഐച്ഛികം)",
+        notesPlaceholder: "ലക്ഷണങ്ങൾ അല്ലെങ്കിൽ ആശങ്കകൾ വിവരിക്കുക",
+        analyzeBtn: "വിശകലനം ചെയ്യുക"
+      },
+      tam: {
+        title: "உங்கள் மொழியைத் தேர்ந்தெடுக்கவும்",
+        description: "நீங்கள் வசதியாக இருக்கும் மொழியைத் தேர்ந்தெடுக்கவும்.",
+        heroTitle: "உங்கள் ஸ்மார்ட் தாவர ஆரோக்கிய உதவியாளர்",
+        heroDesc: "நோயுற்ற தாவரங்களை விரைவாக சரிபார்க்கவும். புகைப்படம் எடுக்கவும், பதில் பெறவும், உங்கள் பயிர்களை பாதுகாக்கவும்.",
+        uploadLabel: "பயிர் படத்தை பதிவேற்றவும்",
+        takePhoto: "புகைப்படம் எடுக்கவும்",
+        notesLabel: "கூடுதல் குறிப்புகள் (விருப்பத்திற்கானது)",
+        notesPlaceholder: "அறிகுறிகள் அல்லது கவலைகளை விவரிக்கவும்",
+        analyzeBtn: "பகுப்பாய்வு"
+      },
+      tel: {
+        title: "మీ భాషను ఎంచుకోండి",
+        description: "మీకు అనుకూలమైన భాషను ఎంచుకోండి.",
+        heroTitle: "మీ స్మార్ట్ మొక్కల ఆరోగ్య సహాయకుడు",
+        heroDesc: "రోగగ్రస్త మొక్కలను త్వరగా తనిఖీ చేయండి. ఫోటో తీసుకోండి, సమాధానం పొందండి, మీ పంటలను రక్షించండి.",
+        uploadLabel: "పంట చిత్రాన్ని అప్‌లోడ్ చేయండి",
+        takePhoto: "ఫోటో తీయండి",
+        notesLabel: "అదనపు గమనికలు (ఐచ్ఛికం)",
+        notesPlaceholder: "లక్షణాలు లేదా ఆందోళనలు వివరించండి",
+        analyzeBtn: "విశ్లేషించండి"
+      },
+      kan: {
+        title: "ನಿಮ್ಮ ಭಾಷೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+        description: "ನೀವು ಅನುಕೂಲವಾಗಿರುವ ಭಾಷೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ.",
+        heroTitle: "ನಿಮ್ಮ ಸ್ಮಾರ್ಟ್ ಸಸ್ಯ ಆರೋಗ್ಯ ಸಹಾಯಕ",
+        heroDesc: "ರೋಗಗ್ರಸ್ತ ಸಸ್ಯಗಳನ್ನು ತ್ವರಿತವಾಗಿ ಪರಿಶೀಲಿಸಿ. ಫೋಟೋ ತೆಗೆದು ಉತ್ತರ ಪಡೆಯಿರಿ, ನಿಮ್ಮ ಬೆಳೆಗಳನ್ನು ಉಳಿಸಿ.",
+        uploadLabel: "ಬೆಳೆ ಚಿತ್ರವನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ",
+        takePhoto: "ಫೋಟೋ ತೆಗೆದುಕೊಳ್ಳಿ",
+        notesLabel: "ಹೆಚ್ಚುವರಿ ಟಿಪ್ಪಣಿಗಳು (ಐಚ್ಛಿಕ)",
+        notesPlaceholder: "ಲಕ್ಷಣಗಳು ಅಥವಾ ಚಿಂತೆಗಳನ್ನು ವಿವರಿಸಿ",
+        analyzeBtn: "ವಿಶ್ಲೇಷಿಸಿ"
+      },
+      mar: {
+        title: "आपली भाषा निवडा",
+        description: "आपल्याला सोयीस्कर असलेली भाषा निवडा.",
+        heroTitle: "आपला स्मार्ट वनस्पती आरोग्य सहाय्यक",
+        heroDesc: "आजारी वनस्पतींची झटपट तपासणी करा. फोटो घ्या, उत्तर मिळवा, आपली पिके वाचवा.",
+        uploadLabel: "पिकाचा फोटो अपलोड करा",
+        takePhoto: "फोटो घ्या",
+        notesLabel: "अतिरिक्त नोंदी (पर्यायी)",
+        notesPlaceholder: "लक्षणे किंवा चिंता वर्णन करा",
+        analyzeBtn: "विश्लेषण करा"
+      }
+    };
+  </script>
+  <!-- ===== translation.js END ===== -->
+
+  <!-- ===== script.js START ===== -->
+  <script>
+    // Show main page if language is already selected
+    document.addEventListener('DOMContentLoaded', function() {
+  localStorage.removeItem('selectedLanguage'); // Always show language selection
+  const lang = localStorage.getItem('selectedLanguage');
+  if (lang) {
+    showMainPage();
+    applyTranslations(lang);
+  } else {
+    showLanguagePage();
+  }
+});
+
+    function setLanguage(lang) {
+      localStorage.setItem('selectedLanguage', lang);
+      showMainPage();
+      applyTranslations(lang);
+    }
+
+    function showMainPage() {
+      document.getElementById('languagePage').style.display = 'none';
+      document.getElementById('mainPage').style.display = '';
+    }
+    function showLanguagePage() {
+      document.getElementById('languagePage').style.display = '';
+      document.getElementById('mainPage').style.display = 'none';
+    }
+
+    function applyTranslations(lang) {
+      const t = translations[lang] || translations['en'];
+      // Language page
+      if (document.getElementById('title')) document.getElementById('title').textContent = t.title;
+      if (document.getElementById('description')) document.getElementById('description').textContent = t.description;
+      // Main page
+      if (document.getElementById('heroTitle')) document.getElementById('heroTitle').textContent = t.heroTitle;
+      if (document.getElementById('heroDesc')) document.getElementById('heroDesc').textContent = t.heroDesc;
+      if (document.getElementById('uploadLabel')) document.getElementById('uploadLabel').textContent = t.uploadLabel;
+      if (document.getElementById('takePhotoText')) document.getElementById('takePhotoText').textContent = t.takePhoto;
+      if (document.getElementById('notesLabel')) document.getElementById('notesLabel').textContent = t.notesLabel;
+      if (document.getElementById('notes')) document.getElementById('notes').placeholder = t.notesPlaceholder;
+      if (document.getElementById('analyzeBtn')) document.getElementById('analyzeBtn').textContent = t.analyzeBtn;
+    }
+
+    // Backend API URL - change this if your backend runs on a different port
+    const API_BASE_URL = 'http://localhost:8080/api';
+
+    // Take photo button triggers file input
+    document.addEventListener('DOMContentLoaded', function() {
+      const takePhotoBtn = document.getElementById('takePhotoBtn');
+      const imageInput = document.getElementById('imageInput');
+      const analyzeBtn = document.getElementById('analyzeBtn');
+      
+      if (takePhotoBtn && imageInput) {
+        takePhotoBtn.addEventListener('click', function() {
+          imageInput.click();
+        });
+      }
+      
+      // Image preview
+      if (imageInput) {
+        imageInput.addEventListener('change', function(e) {
+          const file = e.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+              document.getElementById('imageContainer').innerHTML =
+                `<img src="${evt.target.result}" alt="Preview">`;
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+      }
+      
+      // Analyze button - send image to backend
+      if (analyzeBtn) {
+        analyzeBtn.addEventListener('click', async function() {
+          const imageInput = document.getElementById('imageInput');
+          const notes = document.getElementById('notes').value;
+          
+          if (!imageInput.files || imageInput.files.length === 0) {
+            alert('Please select an image first!');
+            return;
+          }
+          
+          const file = imageInput.files[0];
+          await analyzeImage(file, notes);
+        });
+      }
+    });
+
+    // Function to send image to backend and display results
+    async function analyzeImage(file, notes) {
+      const analyzeBtn = document.getElementById('analyzeBtn');
+      const originalText = analyzeBtn.textContent;
+      
+      try {
+        // Show loading state
+        analyzeBtn.disabled = true;
+        analyzeBtn.textContent = 'Analyzing...';
+        
+        // Create FormData
+        const formData = new FormData();
+        formData.append('image', file);
+        if (notes) {
+          formData.append('notes', notes);
+        }
+        
+        // Send request to backend
+        const response = await fetch(`${API_BASE_URL}/predict`, {
+          method: 'POST',
+          body: formData
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        
+        // Display results
+        displayResults(result);
+        
+      } catch (error) {
+        console.error('Error analyzing image:', error);
+        alert('Error analyzing image: ' + error.message + '\n\nMake sure the backend is running on http://localhost:8080');
+      } finally {
+        // Reset button
+        analyzeBtn.disabled = false;
+        analyzeBtn.textContent = originalText;
+      }
+    }
+
+    // Function to display prediction results
+    function displayResults(result) {
+      // Hide the form elements
+      const cropForm = document.getElementById('cropForm');
+      const heroSection = document.querySelector('.hero');
+      const changeLangBtn = document.getElementById('changeLangBtn');
+      
+      if (cropForm) {
+        cropForm.style.display = 'none';
+      }
+      if (heroSection) {
+        heroSection.style.display = 'none';
+      }
+      if (changeLangBtn) {
+        changeLangBtn.style.display = 'none';
+      }
+      
+      // Get main element to display results
+      const mainElement = document.querySelector('main');
+      const imageContainer = document.getElementById('imageContainer');
+      const currentImage = imageContainer ? imageContainer.querySelector('img') : null;
+      
+      // Create results display
+      const resultsHTML = `
+        <div style="max-width: 600px; margin: 2em auto; padding: 2em; background: #fff; border-radius: 16px; box-shadow: 0 4px 16px rgba(44, 62, 80, 0.1);">
+          <h2 style="margin-top: 0; color: #145a32; text-align: center; font-size: 1.8em;">🌱 Analysis Results</h2>
+          ${currentImage ? `<div style="text-align: center; margin-bottom: 1.5em;"><img src="${currentImage.src}" alt="Analyzed Image" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(44, 62, 80, 0.1);"></div>` : ''}
+          <div style="margin-bottom: 1.5em;">
+            <p style="font-size: 1.1em; margin: 0.5em 0;"><strong>Status:</strong> <span style="color: ${result.status === 'Success' ? '#2ecc40' : '#e74c3c'}">${result.status}</span></p>
+            <p style="font-size: 1.1em; margin: 0.5em 0;"><strong>Predicted Class:</strong> <span style="color: #145a32; font-weight: bold;">${result.predictedClass || 'N/A'}</span></p>
+            <p style="font-size: 1.1em; margin: 0.5em 0;"><strong>Confidence:</strong> <span style="color: #27ae60; font-weight: bold;">${result.confidence ? result.confidence.toFixed(2) + '%' : 'N/A'}</span></p>
+          </div>
+          <div style="margin-top: 1.5em; padding: 1.2em; background: #eafaf1; border-radius: 8px; border-left: 4px solid #27ae60;">
+            <h3 style="margin-top: 0; color: #145a32;">💡 Recommendation:</h3>
+            <p style="margin-top: 0.8em; white-space: pre-line; line-height: 1.6; color: #2c3e50;">${result.recommendation || 'No recommendation available.'}</p>
+          </div>
+          <button id="analyzeAnotherBtn" style="margin-top: 2em; width: 100%; background: #2ecc40; color: #fff; border: none; border-radius: 8px; padding: 14px 0; font-size: 1.1em; cursor: pointer; font-weight: bold;">
+            Analyze Another Image
+          </button>
+        </div>
+      `;
+      
+      // Replace main content with results
+      if (mainElement) {
+        mainElement.innerHTML = resultsHTML;
+        
+        // Add event listener for "Analyze Another" button
+        const analyzeAnotherBtn = document.getElementById('analyzeAnotherBtn');
+        if (analyzeAnotherBtn) {
+          analyzeAnotherBtn.addEventListener('click', function() {
+            location.reload(); // Reload page to reset form
+          });
+        }
+      } else {
+        // Fallback: use imageContainer if main doesn't exist
+        if (imageContainer) {
+          imageContainer.innerHTML = resultsHTML;
+        }
+      }
+    }
+  </script>
+  <!-- ===== script.js END ===== -->
+</body>
+</html>
